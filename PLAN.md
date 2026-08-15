@@ -48,15 +48,15 @@ Control and monitor the CPU (Intel i7-6700HQ) on Debian 13 (GNOME) with a dark, 
 5. **Telemetry module:** reads coretemp, RAPL `energy_uj`, per-core `scaling_cur_freq`, `/proc/stat`; computes usage% and watts from deltas; 1Hz ticker emits `telemetry` events to the frontend.
 
 ### Phase 2 — Frontend (design work)
-6. Token system: palette, Geist + JetBrains Mono (fontsource), radius scale.
-7. Control rail: turbo toggle, MHz cap slider (→ `max_perf_pct`), EPP select, save profile, Apply.
-8. **Telemetry panel:** CPU usage ring (animated), 8 per-core usage bars, per-core freq, package + per-core temps, RAPL power (package/cores/uncore/dram) + rolling sparklines.
-9. Loading / error / needs-root / no-sensor states; keyboard focus; `prefers-reduced-motion`.
-10. Micro-interactions: `:active` press feedback, toggle spring, gauge sweep.
+6. Token system: palette, Geist + JetBrains Mono (fontsource), radius scale. — DONE
+7. Control rail: turbo toggle, MHz cap slider (→ `max_perf_pct`), EPP select, save profile, Apply. — DONE (seeds from live sysfs)
+8. **Telemetry panel:** CPU usage ring (animated), 8 per-core usage bars, per-core freq, package + per-core temps, RAPL power (package/cores/uncore/dram) + rolling sparklines. — DONE
+9. Loading / error / needs-root / no-sensor states; keyboard focus; `prefers-reduced-motion`. — DONE
+10. Micro-interactions: `:active` press feedback, toggle spring, gauge sweep. — DONE (verified via gnome-screenshot → describe_image, including pixel-measured bar extents)
 
 ### Phase 3 — Behaviors
-11. Optional autostart `.desktop` writer (in-app toggle, default OFF).
-12. `--apply-profile` CLI flag.
+11. Optional autostart `.desktop` writer (in-app toggle, default OFF). — DONE (`src-tauri/src/autostart.rs`, `get/set_autostart` commands, toggle in ApplyBar card; unit-tested)
+12. `--apply-profile` CLI flag. — DONE (`src-tauri/src/cli.rs`; profiles: performance/balanced/power/eco/quiet, omit name → saved profile; `--help`)
 
 ### Phase 4 — Verify & package
 13. `gnome-screenshot -w` → `describe_image` → iterate on UI (verify animations mid-poll).

@@ -66,6 +66,14 @@ export function loadProfile(): Promise<Profile> {
   return invoke<Profile>("load_profile");
 }
 
+export function getAutostart(): Promise<boolean> {
+  return invoke<boolean>("get_autostart");
+}
+
+export function setAutostart(enabled: boolean): Promise<void> {
+  return invoke<void>("set_autostart", { enabled });
+}
+
 export function onTelemetry(
   cb: (sample: TelemetrySample) => void,
 ): Promise<() => void> {

@@ -2,6 +2,7 @@ use serde::Deserialize;
 use tauri::State;
 
 use crate::apply;
+use crate::autostart;
 use crate::config;
 use crate::sysfs;
 use crate::telemetry::{Sample, TelemetryState};
@@ -60,4 +61,14 @@ pub fn save_profile(profile: config::Profile) -> Result<(), String> {
 #[tauri::command]
 pub fn load_profile() -> config::Profile {
     config::load()
+}
+
+#[tauri::command]
+pub fn get_autostart() -> bool {
+    autostart::enabled()
+}
+
+#[tauri::command]
+pub fn set_autostart(enabled: bool) -> Result<(), String> {
+    autostart::set(enabled)
 }

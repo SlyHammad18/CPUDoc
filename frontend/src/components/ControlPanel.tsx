@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import type { Profile } from "../lib/api";
 import {
   applySettings,
+  getAutostart,
   loadProfile,
   saveProfile,
+  setAutostart,
 } from "../lib/api";
 import type { StatusKind } from "./StatusPill";
 import ApplyBar from "./ApplyBar";
@@ -44,6 +46,8 @@ export default function ControlPanel({
   const [busy, setBusy] = useState(false);
   const [kind, setKind] = useState<StatusKind>("idle");
   const [message, setMessage] = useState<string | undefined>();
+  const [autostart, setAutostartState] = useState(false);
+  const [autostartBusy, setAutostartBusy] = useState(false);
   const synced = useRef(false);
 
   useEffect(() => {
@@ -75,6 +79,25 @@ export default function ControlPanel({
       ...p,
       max_perf_pct: clamp(Math.round((v / turboMax) * 100), 0, 100),
     }));
+  }
+
+  useEffect(() => {
+    getAutostart().then(setAutostartState).catch(() => {});
+  }, []);
+
+  async function onToggleAutostart(v: boolean) {
+    setAutostartBusy(true);
+    try {
+      await setAutostart(v);
+      setAutostartState(v);
+      setKind("applied");
+      setMessage(v ? "Will start on login" : "Removed from login");
+    } catch (e) {
+      setKind("error");
+      setMessage(String(e));
+    } finally {
+      setAutostartBusy(false);
+    }
   }
 
   async function onApply() {
@@ -160,6 +183,9 @@ export default function ControlPanel({
           message={message}
           onApply={onApply}
           onSave={onSave}
+          autostart={autostart}
+          onToggleAutostart={onToggleAutostart}
+          autostartBusy={autostartBusy}
         />
       </section>
     </div>

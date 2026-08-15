@@ -1,5 +1,6 @@
 import { FloppyDisk, Play } from "@phosphor-icons/react";
 import StatusPill, { type StatusKind } from "./StatusPill";
+import Toggle from "./Toggle";
 
 interface ApplyBarProps {
   busy: boolean;
@@ -7,6 +8,9 @@ interface ApplyBarProps {
   message?: string;
   onApply: () => void;
   onSave: () => void;
+  autostart: boolean;
+  onToggleAutostart: (v: boolean) => void;
+  autostartBusy: boolean;
 }
 
 export default function ApplyBar({
@@ -15,6 +19,9 @@ export default function ApplyBar({
   message,
   onApply,
   onSave,
+  autostart,
+  onToggleAutostart,
+  autostartBusy,
 }: ApplyBarProps) {
   return (
     <div className="flex flex-col gap-3">
@@ -32,12 +39,22 @@ export default function ApplyBar({
           type="button"
           onClick={onSave}
           disabled={busy}
+          title="Save profile"
           className="flex items-center justify-center gap-2 rounded-full border border-hairline2 bg-surface2 px-3 py-2 text-sm font-medium text-muted transition-colors duration-150 hover:text-text active:scale-[0.97] disabled:opacity-50"
         >
           <FloppyDisk size={14} />
         </button>
       </div>
       <StatusPill kind={kind} message={message} />
+      <div className="mt-1 border-t border-hairline2 pt-3">
+        <Toggle
+          checked={autostart}
+          onChange={onToggleAutostart}
+          label="Start on login"
+          hint="Launch with your GNOME session"
+          disabled={autostartBusy}
+        />
+      </div>
     </div>
   );
 }
