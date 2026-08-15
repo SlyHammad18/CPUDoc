@@ -1,0 +1,131 @@
+#!/bin/sh
+# CPUDoc apply helper - writes CPU power-management settings via sysfs.
+# Run as root (via pkexec). Installed to /usr/local/lib/cpudoc/cpudoc-apply.
+set -eu
+
+PS=/sys/devices/system/cpu/intel_pstate
+
+usage() {
+    echo "usage: cpudoc-apply set --turbo on|off --max-pct N --min-pct N [--epp PREF]"
+    echo "       cpudoc-apply status"
+    echo "       cpudoc-apply list"
+    exit 1
+}
+
+require_intel_pstate() {
+    [ -d "$PS" ] || { echo "error: intel_pstate not available" >&2; exit 1; }
+}
+
+set_value() {
+    file="$1"
+    value="$2"
+    [ -w "$file" ] || { echo "error: $file is not writable" >&2; exit 1; }
+    printf '%s\n' "$value" > "$file"
+}
+
+is_num() {
+    case "$1" in
+        '' | *[!0-9]*) return 1 ;;
+        *) return 0 ;;
+    esac
+}
+
+check_pct() {
+    name="$1"
+    value="$2"
+    is_num "$value" || { echo "error: $name must be numeric" >&2; exit 1; }
+    [ "$value" -ge 0 ] && [ "$value" -le 100 ] || {
+        echo "error: $name out of range (0-100)" >&2
+        exit 1
+    }
+}
+
+cmd_set() {
+    turbo=
+    max=
+    min=
+    epp=
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            --turbo)
+                [ "$#" -ge 2 ] || usage
+                case "$2" in
+                    on) turbo=0 ;;
+                    off) turbo=1 ;;
+                    *) echo "error: --turbo must be on|off" >&2; exit 1 ;;
+                esac
+                shift 2
+                ;;
+            --max-pct)
+                [ "$#" -ge 2 ] || usage
+                check_pct "max-pct" "$2"
+                max="$2"
+                shift 2
+                ;;
+            --min-pct)
+                [ "$#" -ge 2 ] || usage
+                check_pct "min-pct" "$2"
+                min="$2"
+                shift 2
+                ;;
+            --epp)
+                [ "$#" -ge 2 ] || usage
+                epp="$2"
+                shift 2
+                ;;
+            *) echo "error: unknown argument $1" >&2; usage ;;
+        esac
+    done
+
+    if [ -n "$max" ] && [ -n "$min" ] && [ "$max" -lt "$min" ]; then
+        echo "error: max-pct must be >= min-pct" >&2
+        exit 1
+    fi
+
+    require_intel_pstate
+
+    if [ -n "$turbo" ]; then
+        set_value "$PS/no_turbo" "$turbo"
+    fi
+    if [ -n "$max" ]; then
+        set_value "$PS/max_perf_pct" "$max"
+    fi
+    if [ -n "$min" ]; then
+        set_value "$PS/min_perf_pct" "$min"
+    fi
+    if [ -n "$epp" ]; then
+        prefs=$(cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_available_preferences 2>/dev/null || true)
+        case " $prefs " in
+            *" $epp "*) ;;
+            *) echo "error: invalid epp preference '$epp'" >&2; exit 1 ;;
+        esac
+        for f in /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference; do
+            set_value "$f" "$epp"
+        done
+    fi
+
+    echo "applied"
+}
+
+cmd_status() {
+    require_intel_pstate
+    echo "no_turbo=$(cat "$PS/no_turbo" 2>/dev/null)"
+    echo "max_perf_pct=$(cat "$PS/max_perf_pct" 2>/dev/null)"
+    echo "min_perf_pct=$(cat "$PS/min_perf_pct" 2>/dev/null)"
+    echo "turbo_pct=$(cat "$PS/turbo_pct" 2>/dev/null)"
+    echo "base_frequency=$(cat /sys/devices/system/cpu/cpu0/cpufreq/base_frequency 2>/dev/null)"
+    echo "cpuinfo_max_freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq 2>/dev/null)"
+    echo "epp=$(cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference 2>/dev/null)"
+}
+
+cmd_list() {
+    require_intel_pstate
+    echo "energy_performance_available_preferences=$(cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_available_preferences 2>/dev/null)"
+}
+
+case "${1:-}" in
+    set) shift; cmd_set "$@" ;;
+    status) shift; cmd_status ;;
+    list) shift; cmd_list ;;
+    *) usage ;;
+esac

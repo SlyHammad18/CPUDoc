@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD polkit Policy Configuration 1.0//EN"
+  "http://www.freedesktop.org/standards/PolicyKit/1/polkit-policyconfig.dtd">
+<policyconfig>
+  <vendor>CPUDoc</vendor>
+  <vendor_url>https://github.com/SlyHammad18/CPUDoc</vendor_url>
+
+  <action id="io.cpudoc.apply">
+    <description>Apply CPU power-management settings</description>
+    <description xml:lang="en">Apply CPU power-management settings</description>
+    <message>Authentication is required to apply CPU power settings.</message>
+    <message xml:lang="en">Authentication is required to apply CPU power settings.</message>
+    <defaults>
+      <allow_any>auth_admin_keep</allow_any>
+      <allow_inactive>auth_admin_keep</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/local/lib/cpudoc/cpudoc-apply</annotate>
+    <annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
+  </action>
+</policyconfig>

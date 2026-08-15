@@ -1,0 +1,3 @@
+# Make Intel RAPL energy counters readable by unprivileged users so CPUDoc
+# can report CPU power consumption. Applied by install.sh.
+SUBSYSTEM=="powercap", KERNEL=="intel-rapl*", ACTION=="add", RUN+="/bin/chmod 0444 /sys/class/powercap/%k/energy_uj"
