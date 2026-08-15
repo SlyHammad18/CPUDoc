@@ -35,6 +35,10 @@ pub fn base_freq_khz() -> Option<u64> {
         .or_else(|| read_num(&format!("{CPUFREQ_BASE}/cpuinfo_max_freq")))
 }
 
+pub fn min_freq_khz() -> Option<u64> {
+    read_num(&format!("{CPUFREQ_BASE}/cpuinfo_min_freq"))
+}
+
 pub fn turbo_max_khz() -> Option<u64> {
     let base = base_freq_khz()?;
     let tp = turbo_pct().unwrap_or(0);

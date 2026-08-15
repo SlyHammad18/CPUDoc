@@ -9,6 +9,7 @@ export interface CpuState {
   min_perf_pct: number | null;
   turbo_pct: number | null;
   base_freq_khz: number | null;
+  min_freq_khz: number | null;
   turbo_max_khz: number | null;
   epp_prefs: string[];
   epp: string | null;

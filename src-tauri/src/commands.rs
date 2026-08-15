@@ -16,6 +16,7 @@ pub fn get_state() -> serde_json::Value {
         "min_perf_pct": sysfs::min_perf_pct(),
         "turbo_pct": sysfs::turbo_pct(),
         "base_freq_khz": sysfs::base_freq_khz(),
+        "min_freq_khz": sysfs::min_freq_khz(),
         "turbo_max_khz": sysfs::turbo_max_khz(),
         "epp_prefs": sysfs::epp_prefs(),
         "epp": sysfs::epp(),
