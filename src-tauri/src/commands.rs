@@ -22,6 +22,7 @@ pub fn get_state() -> serde_json::Value {
         "epp_prefs": sysfs::epp_prefs(),
         "epp": sysfs::epp(),
         "ncpus": sysfs::ncpus(),
+        "cpu_model": sysfs::cpu_model(),
     })
 }
 

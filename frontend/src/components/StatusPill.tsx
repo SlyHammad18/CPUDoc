@@ -12,7 +12,7 @@ export default function StatusPill({
   if (kind === "idle" && !message) return null;
   const styles: Record<StatusKind, { color: string; bg: string; Icon: typeof Check }> = {
     idle: { color: "#E6EAF0", bg: "#171C26", Icon: Check },
-    applied: { color: "#E8A33D", bg: "rgba(232,163,61,0.12)", Icon: Check },
+    applied: { color: "#2DD4A8", bg: "rgba(45,212,168,0.12)", Icon: Check },
     error: { color: "#E84B3D", bg: "rgba(232,75,61,0.12)", Icon: WarningCircle },
     busy: { color: "#E6EAF0", bg: "#171C26", Icon: CircleNotch },
   };

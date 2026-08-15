@@ -8,8 +8,8 @@
   --color-hairline2: #232b38;
   --color-text: #e6eaf0;
   --color-muted: #99a2b4;
-  --color-accent: #e8a33d;
-  --color-accentdim: #b07e2c;
+  --color-accent: #2dd4a8;
+  --color-accentdim: #129c80;
   --color-warm: #e8703d;
   --color-hot: #e84b3d;
 
@@ -110,6 +110,19 @@ input[type="range"]:disabled {
 }
 .cpudoc-skeleton {
   animation: cpudoc-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes cpudoc-alert-pulse {
+  0%,
+  100% {
+    text-shadow: 0 0 0 rgba(232, 75, 61, 0);
+  }
+  50% {
+    text-shadow: 0 0 12px rgba(232, 75, 61, 0.55);
+  }
+}
+.cpudoc-alert {
+  animation: cpudoc-alert-pulse 1.1s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

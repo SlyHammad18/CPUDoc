@@ -6,8 +6,8 @@ export const colors = {
   hairline2: "#232B38",
   text: "#E6EAF0",
   muted: "#99A2B4",
-  accent: "#E8A33D",
-  accentDim: "#B07E2C",
+  accent: "#2DD4A8",
+  accentDim: "#129C80",
   warm: "#E8703D",
   hot: "#E84B3D",
 };

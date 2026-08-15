@@ -7,11 +7,12 @@ export default function TempPanel({
   pkg: number | null;
   cores: number[];
 }) {
+  const alert = pkg != null && pkg >= 85;
   return (
     <div className="flex items-center justify-between gap-5">
       <div className="min-w-[86px]">
         <div
-          className="font-mono text-3xl leading-none"
+          className={`font-mono text-3xl leading-none ${alert ? "cpudoc-alert" : ""}`}
           style={{ color: tempColor(pkg ?? 0) }}
         >
           {pkg != null ? pkg.toFixed(0) : "—"}

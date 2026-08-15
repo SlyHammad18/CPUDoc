@@ -14,12 +14,13 @@
       {
         "label": "main",
         "title": "CPUDoc",
-        "width": 1040,
+        "width": 1120,
         "height": 720,
-        "minWidth": 880,
-        "minHeight": 620,
+        "minWidth": 900,
+        "minHeight": 640,
         "resizable": true,
-        "center": true
+        "center": true,
+        "decorations": false
       }
     ],
     "security": {

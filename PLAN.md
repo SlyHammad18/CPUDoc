@@ -30,8 +30,9 @@ Control and monitor the CPU (Intel i7-6700HQ) on Debian 13 (GNOME) with a dark, 
 
 - **Read:** system utility for a power user, "instrument panel" language, dark-only.
 - **Dials:** VARIANCE 5 / MOTION 4-5 / DENSITY 6. Motion orchestrated around the live telemetry cluster; restrained elsewhere. `prefers-reduced-motion` degrades to static.
-- **Palette:** base `#0B0E14` (near-black blue), elevated `#12161D`, hairline `#1E2530`, text `#E6EAF0`, muted `#8A94A6`, **single amber accent `#E8A33D`** (power/thermal vernacular; no AI-purple, no acid-green).
+- **Palette:** base `#0B0E14` (near-black blue), elevated `#12161D`, hairline `#1E2530`, text `#E6EAF0`, muted `#99A2B4`, **single emerald-teal accent `#2DD4A8`** (dim `#129C80`); thermal ramp builds on it: teal (cool) → `#E8703D` warm → `#E84B3D` hot. No AI-purple, no acid-green.
 - **Type:** Geist (sans) + JetBrains Mono (live numerals), self-hosted via fontsource (offline).
+- **Window:** frameless (`decorations: false`, 1120×720) with custom titlebar — brand + CPU model, live/turbo pills, native-style min/max/close controls (`core:window` permissions).
 - **Signature:** live "instrument cluster" — CPU usage ring, frequency gauge, per-core usage bars, package temp with amber→warm color scale, RAPL power readout with rolling 60s sparklines (SVG polylines animated via Motion).
 - **Layout:** left control rail (turbo toggle, MHz cap slider, EPP select, save profile, Apply) · right telemetry panel.
 - A11y: full keyboard focus, WCAG AA contrast, `:active` press feedback, no wrapping CTAs.

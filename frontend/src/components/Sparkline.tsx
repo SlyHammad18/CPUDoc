@@ -12,7 +12,7 @@ export default function Sparkline({
   data,
   width,
   height,
-  color = "#E8A33D",
+  color = "var(--color-accent)",
 }: SparklineProps) {
   const reduce = useReducedMotion();
   const [drawn, setDrawn] = useState(false);

@@ -76,3 +76,15 @@ pub fn ncpus() -> usize {
         })
         .unwrap_or(0)
 }
+
+pub fn cpu_model() -> Option<String> {
+    fs::read_to_string("/proc/cpuinfo")
+        .ok()?
+        .lines()
+        .find_map(|l| {
+            let l = l.trim();
+            l.strip_prefix("model name")?
+                .split_once(':')
+                .map(|(_, v)| v.trim().to_string())
+        })
+}

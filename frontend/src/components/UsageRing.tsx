@@ -1,6 +1,6 @@
 export default function UsageRing({
   pct,
-  size = 148,
+  size = 156,
 }: {
   pct: number | null;
   size?: number;
@@ -27,7 +27,7 @@ export default function UsageRing({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="#E8A33D"
+          stroke="var(--color-accent)"
           strokeWidth={sw}
           strokeLinecap="round"
           strokeDasharray={c}

@@ -22,9 +22,9 @@ const TRACK = arcPath(135, 45);
 const TICKS = [0, 0.25, 0.5, 0.75, 1].map((f) => {
   const ang = (135 + f * 270) % 360;
   const a = (ang * Math.PI) / 180;
-  const inner = [CX + (R - 5) * Math.cos(a), CY + (R - 5) * Math.sin(a)];
-  const outer = [CX + (R - 10) * Math.cos(a), CY + (R - 10) * Math.sin(a)];
-  return { inner, outer };
+  const inner = [CX + (R - 6) * Math.cos(a), CY + (R - 6) * Math.sin(a)];
+  const outer = [CX + (R - 12) * Math.cos(a), CY + (R - 12) * Math.sin(a)];
+  return { inner, outer, ang };
 });
 
 export default function FreqGauge({
@@ -42,29 +42,47 @@ export default function FreqGauge({
 
   return (
     <div className="flex flex-col items-center">
-      <svg viewBox="0 0 240 150" className="w-full max-w-[300px]">
-        <path d={TRACK} fill="none" stroke="#1E2530" strokeWidth={7} strokeLinecap="round" />
+      <svg viewBox="0 0 240 158" className="w-full max-w-[340px]">
+        <path d={TRACK} fill="none" stroke="#1E2530" strokeWidth={8} strokeLinecap="round" />
         {valuePath && (
           <path
             d={valuePath}
             fill="none"
-            stroke="#E8A33D"
-            strokeWidth={7}
+            stroke="var(--color-accent)"
+            strokeWidth={8}
             strokeLinecap="round"
             style={{ transition: "d 0.8s cubic-bezier(0.16,1,0.3,1)" }}
           />
         )}
-        {TICKS.map((t, i) => (
-          <line
-            key={i}
-            x1={t.inner[0]}
-            y1={t.inner[1]}
-            x2={t.outer[0]}
-            y2={t.outer[1]}
-            stroke="#232B38"
-            strokeWidth={1.5}
-          />
-        ))}
+        {TICKS.map((t, i) => {
+          const a = (t.ang * Math.PI) / 180;
+          const cos = Math.cos(a);
+          const anchor = cos < -0.3 ? "end" : cos > 0.3 ? "start" : "middle";
+          const lx = CX + (R + 17) * cos;
+          const ly = CY + (R + 17) * Math.sin(a) + 3.5;
+          return (
+            <g key={i}>
+              <line
+                x1={t.inner[0]}
+                y1={t.inner[1]}
+                x2={t.outer[0]}
+                y2={t.outer[1]}
+                stroke="#232B38"
+                strokeWidth={1.5}
+              />
+              <text
+                x={lx}
+                y={ly}
+                textAnchor={anchor}
+                fill="#99A2B4"
+                fontSize={8.5}
+                fontFamily="JetBrains Mono Variable, monospace"
+              >
+                {(Number(cap) * [0, 0.25, 0.5, 0.75, 1][i]).toFixed(1)}
+              </text>
+            </g>
+          );
+        })}
         <g
           style={{
             transform: `rotate(${needleAngle}deg)`,
@@ -83,9 +101,9 @@ export default function FreqGauge({
             strokeLinecap="round"
           />
         </g>
-        <circle cx={CX} cy={CY} r={7} fill="#12161D" stroke="#E8A33D" strokeWidth={2} />
+        <circle cx={CX} cy={CY} r={7} fill="#12161D" stroke="var(--color-accent)" strokeWidth={2} />
       </svg>
-      <div className="-mt-2 flex items-baseline gap-2 font-mono">
+      <div className="-mt-1 flex items-baseline gap-2 font-mono">
         <span className="text-2xl leading-none text-text">{ghz}</span>
         <span className="text-[10px] uppercase tracking-widest text-muted">
           of {cap} GHz

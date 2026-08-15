@@ -14,6 +14,7 @@ export interface CpuState {
   epp_prefs: string[];
   epp: string | null;
   ncpus: number;
+  cpu_model: string | null;
 }
 
 export interface Power {

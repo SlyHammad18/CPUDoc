@@ -27,6 +27,7 @@ interface ControlPanelProps {
   eppPrefs: string[];
   noTurbo: boolean | null;
   currentEpp: string | null;
+  currentKhz: number | null;
   onApplied: () => void;
 }
 
@@ -36,6 +37,7 @@ export default function ControlPanel({
   eppPrefs,
   noTurbo,
   currentEpp,
+  currentKhz,
   onApplied,
 }: ControlPanelProps) {
   const turboMax = turboMaxKhz ? Math.round(turboMaxKhz / 1000) : 3458;
@@ -162,6 +164,7 @@ export default function ControlPanel({
           mhz={mhz}
           minMhz={minMhz}
           maxMhz={turboMax}
+          currentKhz={currentKhz}
           onChange={onMhz}
         />
       </section>

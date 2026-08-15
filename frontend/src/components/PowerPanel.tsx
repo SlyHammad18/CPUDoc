@@ -36,8 +36,8 @@ export default function PowerPanel({
           ))}
         </div>
       </div>
-      <div className="mt-2">
-        <Sparkline data={history} width={300} height={32} />
+      <div className="mt-4">
+        <Sparkline data={history} width={300} height={30} />
       </div>
     </div>
   );
