@@ -2,9 +2,9 @@
 
 Control and monitor your Intel CPU on Linux — a dark, instrument-panel desktop app built with Tauri.
 
-[![Release](https://img.shields.io/github/v/release/SlyHammad18/CPUDoc?color=2DD4A8)](https://github.com/SlyHammad18/CPUDoc/releases)
-[![Downloads](https://img.shields.io/github/downloads/SlyHammad18/CPUDoc/total?color=2DD4A8)](https://github.com/SlyHammad18/CPUDoc/releases)
-[![License](https://img.shields.io/github/license/SlyHammad18/CPUDoc?color=2DD4A8)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/SlyHammad18/CPUDoc?color=2DD4A8&style=flat)](https://github.com/SlyHammad18/CPUDoc/releases)
+[![Downloads](https://img.shields.io/github/downloads/SlyHammad18/CPUDoc/total?color=2DD4A8&style=flat)](https://github.com/SlyHammad18/CPUDoc/releases)
+[![License](https://img.shields.io/github/license/SlyHammad18/CPUDoc?color=2DD4A8&style=flat)](LICENSE)
 [![Linux](https://img.shields.io/badge/Linux-0B0E14?logo=linux&logoColor=white)]()
 [![Tauri](https://img.shields.io/badge/Tauri%202-24C8DB?logo=tauri&logoColor=white)]()
 [![Rust](https://img.shields.io/badge/Rust-dea584?logo=rust&logoColor=white)]()
