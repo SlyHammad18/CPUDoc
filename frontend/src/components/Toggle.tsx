@@ -6,6 +6,7 @@ interface ToggleProps {
   label: string;
   hint?: string;
   disabled?: boolean;
+  hideLabel?: boolean;
 }
 
 export default function Toggle({
@@ -14,14 +15,17 @@ export default function Toggle({
   label,
   hint,
   disabled,
+  hideLabel,
 }: ToggleProps) {
   const reduce = useReducedMotion();
   return (
-    <div className="flex items-center justify-between gap-3">
-      <div className="min-w-0">
-        <div className="text-sm font-medium text-text">{label}</div>
-        {hint ? <div className="mt-0.5 text-xs text-muted">{hint}</div> : null}
-      </div>
+    <div className={`flex items-center gap-3 ${hideLabel ? "" : "justify-between"}`}>
+      {!hideLabel && (
+        <div className="min-w-0">
+          <div className="text-sm font-medium text-text">{label}</div>
+          {hint ? <div className="mt-0.5 text-xs text-muted">{hint}</div> : null}
+        </div>
+      )}
       <button
         type="button"
         role="switch"

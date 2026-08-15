@@ -13,6 +13,7 @@ import ClockSlider from "./ClockSlider";
 import EppSelect from "./EppSelect";
 import Toggle from "./Toggle";
 import { clamp } from "../theme";
+import { achievedCapKhz } from "../lib/cpu";
 
 const DEFAULT_PROFILE: Profile = {
   turbo_enabled: true,
@@ -23,6 +24,7 @@ const DEFAULT_PROFILE: Profile = {
 
 interface ControlPanelProps {
   turboMaxKhz: number | null;
+  baseKhz: number | null;
   minKhz: number | null;
   eppPrefs: string[];
   noTurbo: boolean | null;
@@ -33,6 +35,7 @@ interface ControlPanelProps {
 
 export default function ControlPanel({
   turboMaxKhz,
+  baseKhz,
   minKhz,
   eppPrefs,
   noTurbo,
@@ -40,8 +43,17 @@ export default function ControlPanel({
   currentKhz,
   onApplied,
 }: ControlPanelProps) {
-  const turboMax = turboMaxKhz ? Math.round(turboMaxKhz / 1000) : 3458;
+  const turboMaxKhzVal = turboMaxKhz ?? 3458000;
+  const turboMax = Math.round(turboMaxKhzVal / 1000);
+  const baseMhz = baseKhz ? Math.round(baseKhz / 1000) : 2600;
   const minMhz = minKhz ? Math.round(minKhz / 1000) : 800;
+  const effMaxMhz = noTurbo ? baseMhz : turboMax;
+
+  function snapMhz(pct: number): number {
+    return Math.round(
+      achievedCapKhz(pct, turboMaxKhzVal, noTurbo, baseKhz, minKhz) / 1000,
+    );
+  }
 
   const [profile, setProfile] = useState<Profile>(DEFAULT_PROFILE);
   const [mhz, setMhz] = useState(2600);
@@ -70,17 +82,15 @@ export default function ControlPanel({
             }
           : p;
         setProfile(seeded);
-        setMhz(Math.round((seeded.max_perf_pct / 100) * turboMax));
+        setMhz(snapMhz(seeded.max_perf_pct));
       })
       .catch(() => {});
-  }, [turboMaxKhz, turboMax, noTurbo, currentEpp]);
+  }, [turboMaxKhz, turboMaxKhzVal, noTurbo, currentEpp]);
 
   function onMhz(v: number) {
-    setMhz(v);
-    setProfile((p) => ({
-      ...p,
-      max_perf_pct: clamp(Math.round((v / turboMax) * 100), 0, 100),
-    }));
+    const pct = clamp(Math.round((v / turboMax) * 100), 0, 100);
+    setMhz(snapMhz(pct));
+    setProfile((p) => ({ ...p, max_perf_pct: pct }));
   }
 
   useEffect(() => {
@@ -140,37 +150,46 @@ export default function ControlPanel({
     }
   }
 
-  const turboNow = noTurbo != null ? (noTurbo ? "off" : "on") : undefined;
-
   return (
-    <div className="flex min-h-0 flex-col gap-3">
-      <section className="rounded-xl border border-hairline bg-surface p-4">
-        <div className="mb-3 text-[10px] font-medium uppercase tracking-[0.18em] text-muted">
-          Turbo boost
+    <div className="flex min-h-0 flex-col gap-4">
+      <section className="flex flex-1 flex-col justify-center rounded-xl border border-hairline bg-surface p-5">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <div className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted">
+              Turbo boost
+            </div>
+            <div
+              className={`mt-1.5 font-mono text-2xl leading-none font-semibold tracking-wide ${
+                profile.turbo_enabled ? "text-accent" : "text-muted"
+              }`}
+            >
+              {profile.turbo_enabled ? "ENABLED" : "DISABLED"}
+            </div>
+          </div>
+          <Toggle
+            checked={profile.turbo_enabled}
+            onChange={(v) => setProfile((p) => ({ ...p, turbo_enabled: v }))}
+            label="Turbo boost"
+            hideLabel
+          />
         </div>
-        <Toggle
-          checked={profile.turbo_enabled}
-          onChange={(v) => setProfile((p) => ({ ...p, turbo_enabled: v }))}
-          label="Turbo boost"
-          hint={turboNow ? `now: ${turboNow}` : "enables all-core boost"}
-        />
       </section>
 
-      <section className="rounded-xl border border-hairline bg-surface p-4">
+      <section className="flex flex-1 flex-col rounded-xl border border-hairline bg-surface p-5">
         <div className="mb-3 text-[10px] font-medium uppercase tracking-[0.18em] text-muted">
           Clock cap
         </div>
         <ClockSlider
           mhz={mhz}
           minMhz={minMhz}
-          maxMhz={turboMax}
+          maxMhz={effMaxMhz}
           currentKhz={currentKhz}
           onChange={onMhz}
         />
       </section>
 
       {eppPrefs.length ? (
-        <section className="rounded-xl border border-hairline bg-surface p-4">
+        <section className="flex flex-1 flex-col rounded-xl border border-hairline bg-surface p-5">
           <EppSelect
             prefs={eppPrefs}
             value={profile.epp}
@@ -179,7 +198,7 @@ export default function ControlPanel({
         </section>
       ) : null}
 
-      <section className="rounded-xl border border-hairline bg-surface p-4">
+      <section className="flex flex-1 flex-col rounded-xl border border-hairline bg-surface p-5">
         <ApplyBar
           busy={busy}
           kind={kind}

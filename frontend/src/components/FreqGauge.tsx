@@ -30,9 +30,11 @@ const TICKS = [0, 0.25, 0.5, 0.75, 1].map((f) => {
 export default function FreqGauge({
   curKhz,
   turboMaxKhz,
+  capKhz,
 }: {
   curKhz: number;
   turboMaxKhz: number;
+  capKhz?: number | null;
 }) {
   const frac = clamp(curKhz / Math.max(turboMaxKhz, 1), 0, 1);
   const valuePath = frac > 0.001 ? arcPath(135, 135 + frac * 270) : null;
@@ -40,9 +42,23 @@ export default function FreqGauge({
   const ghz = (curKhz / 1e6).toFixed(2);
   const cap = (turboMaxKhz / 1e6).toFixed(2);
 
+  const capFrac = capKhz != null ? clamp(capKhz / Math.max(turboMaxKhz, 1), 0, 1) : null;
+  const capTick = capFrac != null ? (() => {
+    const ang = (135 + capFrac * 270) % 360;
+    const a = (ang * Math.PI) / 180;
+    const inner = [CX + (R - 18) * Math.cos(a), CY + (R - 18) * Math.sin(a)];
+    const outer = [CX + (R - 2) * Math.cos(a), CY + (R - 2) * Math.sin(a)];
+    const cos = Math.cos(a);
+    const anchor: "start" | "end" | "middle" =
+      cos < -0.3 ? "end" : cos > 0.3 ? "start" : "middle";
+    const lx = CX + (R + 17) * cos;
+    const ly = CY + (R + 17) * Math.sin(a) + 3.5;
+    return { inner, outer, anchor, lx, ly };
+  })() : null;
+
   return (
     <div className="flex flex-col items-center">
-      <svg viewBox="0 0 240 158" className="w-full max-w-[340px]">
+      <svg viewBox="0 0 240 158" className="w-full max-w-[300px]">
         <path d={TRACK} fill="none" stroke="#1E2530" strokeWidth={8} strokeLinecap="round" />
         {valuePath && (
           <path
@@ -83,6 +99,29 @@ export default function FreqGauge({
             </g>
           );
         })}
+        {capTick && (
+          <g>
+            <line
+              x1={capTick.inner[0]}
+              y1={capTick.inner[1]}
+              x2={capTick.outer[0]}
+              y2={capTick.outer[1]}
+              stroke="var(--color-accent)"
+              strokeWidth={2}
+              strokeLinecap="round"
+            />
+            <text
+              x={capTick.lx}
+              y={capTick.ly}
+              textAnchor={capTick.anchor}
+              fill="var(--color-accent)"
+              fontSize={8.5}
+              fontFamily="JetBrains Mono Variable, monospace"
+            >
+              {capKhz != null ? (capKhz / 1e6).toFixed(2) : ""}
+            </text>
+          </g>
+        )}
         <g
           style={{
             transform: `rotate(${needleAngle}deg)`,
@@ -106,7 +145,7 @@ export default function FreqGauge({
       <div className="-mt-1 flex items-baseline gap-2 font-mono">
         <span className="text-2xl leading-none text-text">{ghz}</span>
         <span className="text-[10px] uppercase tracking-widest text-muted">
-          of {cap} GHz
+          {capKhz != null ? `· cap ${(capKhz / 1e6).toFixed(2)}` : `of ${cap} GHz`}
         </span>
       </div>
     </div>

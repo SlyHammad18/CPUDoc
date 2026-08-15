@@ -39,7 +39,7 @@ export default function ClockSlider({
           <div className="font-mono text-sm text-accent">
             {Math.round((mhz / maxMhz) * 100)}%
           </div>
-          <div className="font-mono text-[10px] text-muted">of turbo</div>
+          <div className="font-mono text-[10px] text-muted">of max</div>
         </div>
       </div>
       <div className="relative mt-1">

@@ -11,12 +11,14 @@ interface TelemetryPanelProps {
   sample: TelemetrySample | null;
   history: History;
   turboMaxKhz: number;
+  capKhz?: number | null;
 }
 
 export default function TelemetryPanel({
   sample,
   history,
   turboMaxKhz,
+  capKhz,
 }: TelemetryPanelProps) {
   const noData = !sample;
   const curFreq = sample
@@ -25,7 +27,7 @@ export default function TelemetryPanel({
 
   return (
     <div className="flex min-h-0 flex-col gap-3">
-      <div className="grid min-h-0 grid-cols-[auto_1fr] gap-3">
+      <div className="grid min-h-0 flex-1 grid-cols-[auto_1fr] gap-3">
         <section className="flex items-center justify-center rounded-xl border border-hairline bg-surface p-4">
           {noData ? (
             <Skeleton className="h-[120px] w-[120px] rounded-full" />
@@ -37,7 +39,7 @@ export default function TelemetryPanel({
           {noData ? (
             <Skeleton className="h-[120px] w-full" />
           ) : (
-            <FreqGauge curKhz={curFreq} turboMaxKhz={turboMaxKhz} />
+            <FreqGauge curKhz={curFreq} turboMaxKhz={turboMaxKhz} capKhz={capKhz} />
           )}
         </section>
       </div>

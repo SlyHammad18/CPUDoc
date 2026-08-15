@@ -1,12 +1,12 @@
 export default function UsageRing({
   pct,
-  size = 156,
+  size = 192,
 }: {
   pct: number | null;
   size?: number;
 }) {
-  const r = 50;
-  const sw = 9;
+  const r = size * 0.45;
+  const sw = Math.max(7, size * 0.058);
   const c = 2 * Math.PI * r;
   const val = pct ?? 0;
   const off = c * (1 - val / 100);
