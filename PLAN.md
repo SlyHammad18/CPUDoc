@@ -60,6 +60,16 @@ Control and monitor the CPU (Intel i7-6700HQ) on Debian 13 (GNOME) with a dark, 
 12. `--apply-profile` CLI flag. — DONE (`src-tauri/src/cli.rs`; profiles: performance/balanced/power/eco/quiet, omit name → saved profile; `--help`)
 
 ### Phase 4 — Verify & package
-13. `gnome-screenshot -w` → `describe_image` → iterate on UI (verify animations mid-poll).
-14. Functional test: apply settings + read back sysfs to confirm turbo off + cap holds; sanity-check telemetry (temp ≈ 40-70°C, idle watts < 20, usage sums ≈ 100%·cores).
-15. Package `.deb` via Tauri bundler.
+13. `gnome-screenshot -w` → `describe_image` → iterate on UI (verify animations mid-poll). — DONE (pixel-measured column bottoms; verified gauge/slider/cap readouts)
+14. Functional test: apply settings + read back sysfs to confirm turbo off + cap holds; sanity-check telemetry (temp ≈ 40-70°C, idle watts < 20, usage sums ≈ 100%·cores). — DONE (calibrated `max_perf_pct` → MHz: 50→1800, 67→2400, matching `achievedCapKhz`; pkexec apply + readback verified)
+15. Package `.deb` via Tauri bundler. — DONE (`@tauri-apps/cli` devDep; `bundle.linux.deb.files` ships helper/policy/udev rule; icon regenerated to emerald teal via `resources/make_icon.py`)
+
+## Packaging notes
+
+- **Build:** `npm --prefix frontend run tauri build` (or `frontend/node_modules/.bin/tauri build` from `src-tauri/`). Output: `src-tauri/target/release/bundle/deb/CPUDoc_0.1.0_amd64.deb` (binary package `cpu-doc`).
+- **Ships in the deb** (via `bundle.linux.deb.files`, modes preserved from `resources/`):
+  - `/usr/local/lib/cpudoc/cpudoc-apply` (0755) — root apply helper
+  - `/usr/share/polkit-1/actions/io.cpudoc.policy` (0644)
+  - `/etc/udev/rules.d/99-cpudoc-powercap.rules` (0644) — RAPL readable by users
+- **Icon:** `resources/make_icon.py` procedurally renders the teal gauge icon into `src-tauri/icons/` (32/128/256/512 + 1024 `icon-source.png`), no external deps.
+- `install.sh` / `uninstall.sh` remain the manual fallback; the deb is the canonical install path.

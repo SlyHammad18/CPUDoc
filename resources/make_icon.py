@@ -8,9 +8,9 @@ BG = (0, 0, 0, 0)
 DISC = (16, 20, 27, 255)
 BORDER = (30, 37, 48, 255)
 TRACK = (30, 37, 48, 255)
-AMBER = (232, 163, 61, 255)
+TEAL = (45, 212, 168, 255)
 NEEDLE = (230, 234, 240, 255)
-HUB = (232, 163, 61, 255)
+HUB = (45, 212, 168, 255)
 
 ARC_START = -135.0
 ARC_END = 135.0
@@ -54,7 +54,7 @@ def make_icon(size):
                         if r_in <= d <= r_out and ARC_START <= ang <= ARC_END:
                             frac = (ang - ARC_START) / ARC_SPAN
                             if frac <= NEEDLE_FRAC:
-                                col = AMBER
+                                col = TEAL
                             else:
                                 col = TRACK
                         if d2 <= hub_r2:
@@ -117,6 +117,7 @@ def main():
         (128, "128x128.png"),
         (256, "128x128@2x.png"),
         (512, "icon.png"),
+        (1024, "icon-source.png"),
     ]:
         raw, sz = make_icon(size)
         path = os.path.join(outdir, name)
